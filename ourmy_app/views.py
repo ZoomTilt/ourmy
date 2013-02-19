@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib import messages
 from ourmy_app.models import Campaign, Action, CampaignUser, UserAction, Prize
 from django.http import HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
@@ -71,7 +72,7 @@ def create_campaign(request, campaign_id=None):
         if form.is_valid():
             form.instance.user = request.user
             # ZT001:  this is temporary -- when we can promote non-video urls we'll put it back into the form.
-            form.instance.video_url = request.POST['long_url']
+            # form.instance.video_url = request.POST['long_url']
             form.save()
 
             sharing_campaign, created = SharingCampaign.objects.get_or_create(campaign=form.instance)
@@ -93,6 +94,9 @@ def create_campaign(request, campaign_id=None):
             sharing_click_action, created = SharingAction.objects.get_or_create(action=click_action, social_network=service[0], post_or_click=True)
             sharing_click_action.save()
             # return HttpResponseRedirect("/")
+
+            messages.add_message(request, messages.INFO, "Campaign created!  You can now create your prize.")
+            print "should give message"
             url = reverse('edit_campaign', kwargs={'campaign_id':form.instance.id})
             return HttpResponseRedirect(url)
         else:
@@ -117,12 +121,15 @@ def create_prize(request, prize_id=None, campaign_id=None):
     prizes_for_campaign = None
     campaign = None
     is_saved = False
-    # we will either get a campaign_id (create) or a pitch_id (edit)
-    # if there's a campaign id, this is a new prize.  Get the campaign, create & save the prize
+    # we will either get a campaign_id (create) or a prize_id (edit)
+    # if there's a campaign id, get the prize if there is one.  If not, get the campaign, create & save the prize
     if campaign_id:
         campaign = get_object_or_404(Campaign, pk=campaign_id)
         prizes_for_campaign = Prize.objects.filter(campaign=campaign)
-        instance = Prize(campaign=campaign)
+        if len(prizes_for_campaign) > 0:
+            instance = prizes_for_campaign[0]
+        else:
+            instance = Prize(campaign=campaign)
     elif prize_id:
         instance = get_object_or_404(Prize, pk=prize_id)
         campaign = instance.campaign
@@ -135,7 +142,7 @@ def create_prize(request, prize_id=None, campaign_id=None):
         form = PrizeForm(request.POST, request.FILES, instance=instance)
         if form.is_valid():
             form.save()
-        instance = Prize(campaign=campaign)
+        # instance = Prize(campaign=campaign)
         form = PrizeForm(instance=instance)
     else:
         form = PrizeForm(instance=instance)

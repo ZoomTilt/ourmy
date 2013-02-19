@@ -6,7 +6,7 @@
 
 <a class="btn btn-primary" href="{% url edit_campaign campaign_id=campaign.id %}">< BACK TO CAMPAIGN SETUP</a>
   <h2 class="campaign-title">Create your prize for {{ campaign.title }}<br />
-    {% if all_prizes %}
+<!--     {% if all_prizes %}
       or 
       <select ONCHANGE="location = this.options[this.selectedIndex].value;">
         <option>Edit a different prize</option>
@@ -17,7 +17,7 @@
             <option value="{% url create_prize campaign_id=campaign.id %}">Add a new prize</option>
         {% endif %}
       </select><h2>
-    {% endif %}
+    {% endif %} -->
 
   <div class="padding">
   <form enctype="multipart/form-data" action="" method="POST">
@@ -32,12 +32,12 @@
   </div>
 </div>
 
-<div class="span5">
+<!-- <div class="span5">
   <h2 class="campaign-title span5-right-title">Prizes so far:</h2>
   {% for prize in all_prizes %}
     <h4>{{ prize.title }}</h4>
     <p>{{ prize.description }}</p>
   {% endfor %}
-</div>
+</div> -->
 
 {% endblock content %}

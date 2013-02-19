@@ -2,7 +2,24 @@
 
 {% block content %}
 
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if is_saved %}
+<div>
+<a class="btn primary" href="{% url create_prize campaign_id=this_campaign.id %}">{% ifequal form.instance.prize_set.all|length 0 %}CREATE{% else %}EDIT{% endifequal %} PRIZES</a>
+&nbsp;&nbsp;Create prizes to reward your most loyal friends and fans!
+</div>
+<h2 class="campaign-title">Edit your campaign<br />
+  {% else %}
 <h2 class="campaign-title">Create your campaign!<br />
+{% endif %}
+
   {% if campaigns %}
     or 
     <select ONCHANGE="location = this.options[this.selectedIndex].value;">
@@ -24,16 +41,11 @@
       <fieldset>
       {{ form }}
       <div class="actions">
-        <input type="submit" class="btn primary btn-offset-top" value="CREATE CAMPAIGN">
+        <input type="submit" class="btn primary btn-offset-top" value="{% if is_saved %}SAVE{% else %}CREATE{% endif %} CAMPAIGN">
       </div>
       </fieldset>
     </form>
 </div>
 
-{% if is_saved %}
-<div>
-<a class="btn primary" href="{% url create_prize campaign_id=this_campaign.id %}">CREATE PRIZES</a>
-&nbsp;&nbsp;Create prizes to reward your most loyal friends and fans!
-</div>
-{% endif %}
+
 {% endblock content %}

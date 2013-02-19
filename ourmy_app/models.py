@@ -32,6 +32,13 @@ def tomorrow():
 
 
 class Campaign(models.Model):
+    RAFFLE = 'R'
+    WINNER_TAKE_ALL = 'G'
+    GAME_TYPE_CHOICES = (
+        (RAFFLE, 'raffle'),
+        (WINNER_TAKE_ALL, 'winner take all'),
+    )
+
     user = models.ForeignKey(User)
     title = models.CharField(blank=True, max_length=100)
     description = models.TextField(blank=True, max_length=250)
@@ -39,6 +46,7 @@ class Campaign(models.Model):
     logo_image = models.FileField(upload_to=get_campaign_logo_path, blank=True, null=True)
     video_url = models.URLField(blank=True)
     api_call = models.CharField(max_length=500, default="sharing.get_actions_for_campaign")
+    game_type = models.CharField(max_length=2, choices=GAME_TYPE_CHOICES, default=WINNER_TAKE_ALL)
 
     class Admin:
         list_display = ('',)
