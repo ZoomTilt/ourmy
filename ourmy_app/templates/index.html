@@ -18,31 +18,33 @@
 	<h2 class="page-title">New Campaigns</h2>
 </div>
 
+<div class="accordion" id="accordion2">
+	
 {% for campaign in campaign_list %}
-	<div class="container campaign">
-		<a href="{% url campaign campaign_id=campaign.id %}">
-		<div class="profile-pic"><img src="{{ MEDIA_URL }}{{ campaign.logo_image }}" />
-		</a>
-		</div>
-		<div class="campaign-text">
-			<h2 class="campaign-title">{{ campaign.title }} <span class="creator small-creator">&nbsp;by {{campaign.user.first_name}}&nbsp;{{campaign.user.last_name}}</span></h2>		
-			<p class="campaign-description">{{ campaign.description }}</p>
-			{% if campaign.days_till_deadline >= 1 %}
-			<p class="text-warning">&#171;&nbsp;&nbsp;Only {{ campaign.days_till_deadline }} days left to support {{ campaign.title }}!</p>
-			{% elif campaign.minutes_till_deadline >= 60 %}
-			<p class="text-warning">&#171;&nbsp;&nbsp;Only {{ campaign.hours_till_deadline }} hours left to support {{ campaign.title }}!</p>
-			{% else %}
-			<p class="text-warning">&#171;&nbsp;&nbsp;Only {{ campaign.minutes_till_deadline }} minutes left to {{ campaign.title }} !</p>
-			{% endif %}
-		</div>
-		<div class="promote-button">
-			<a href="{% url campaign campaign_id=campaign.id %}" class="btn btn-large promo-button-layout">SUPPORT THIS PROJECT</a>
-		</div>
-		<a href="https://twitter.com/share" class="twitter-share-button" data-text="Win rewards for spreading the word about amazing creative projects" data-via="0urmy" data-related="ZoomTilt" data-hashtags="creativearmy">Tweet</a>
-		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+<div class="accordion-group">
+        <div class="accordion-heading">
+			<div class="promote-button">
+				<a href="{% url campaign campaign_id=campaign.id %}" class="btn btn-large promo-button-layout">SUPPORT THIS PROJECT</a>
+			</div>
+          <div class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{campaign.id}}">
+			<div class="container campaign">
+				<a href="{% url campaign campaign_id=campaign.id %}">
+					<div class="profile-pic"><img src="{{ MEDIA_URL }}{{ campaign.logo_image }}" /></div>
+				</a>
+					<div class="campaign-text">
+						<h2 class="campaign-title">{{ campaign.title }} <span class="creator small-creator">&nbsp;by 			{{campaign.user.first_name}}&nbsp;{{campaign.user.last_name}}</span></h2>
+							<div id="collapse{{campaign.id}}" class="accordion-body collapse" style="height: 0px;">
+              					<div class="accordion-inner">
+                					<div class="accordion-dropdown"><p class="campaign-description">{{ campaign.description }}</p></div>
+			  					</div><!--end accordion-inner-->
+							</div><!--end collapseCampaign-->	
+					</div><!--end campaign text-->
+		
 		<p class="prizes-title">Support <strong>{{ campaign.title }}</strong> for a chance to win:</p>
 		<div class="prize-placement">
 		{{ campaign.prizes }}
+	
 		{% for prize in campaign.prize_set.all %}
 			<div class="prize-listing">
 			{% if prize.logo_image %}
@@ -53,8 +55,27 @@
 				<div class="prize-tag">{{ prize.title }}, worth ${{ prize.dollar_value }}!</div></div>
 		{% endfor %}
 		</div>
+		
+		<a href="https://twitter.com/share" class="twitter-share-button" data-text="Win rewards for spreading the word about amazing creative projects" data-via="0urmy" data-related="ZoomTilt" data-hashtags="creativearmy">Tweet</a>
+		
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+		
+		{% if campaign.days_till_deadline >= 1 %}
+		<p class="text-warning">&#171;&nbsp;&nbsp;Only {{ campaign.days_till_deadline }} days left to support {{ campaign.title }}!</p>
+		{% elif campaign.minutes_till_deadline >= 60 %}
+		<p class="text-warning">&#171;&nbsp;&nbsp;Only {{ campaign.hours_till_deadline }} hours left to support {{ campaign.title }}!</p>
+		{% else %}
+		<p class="text-warning">&#171;&nbsp;&nbsp;Only {{ campaign.minutes_till_deadline }} minutes left to {{ campaign.title }} !</p>
+		{% endif %}
+		
 		</div>
+	</div>
+	</div>
+</div>		
+</br>
 
 {% endfor %}
+
+</div><!--end accordion-->
 
 {% endblock %}
